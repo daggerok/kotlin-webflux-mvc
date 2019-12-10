@@ -1,13 +1,12 @@
 pluginManagement {
-  val kotlinVersion: String by extra
-  val springBootVersion: String by extra
-  val versionsPluginVersion: String by extra
-  val dependencyManagementVersion: String by extra
   plugins {
     repositories {
-      mavenCentral()
       gradlePluginPortal()
     }
+    val kotlinVersion: String by extra
+    val springBootVersion: String by extra
+    val versionsPluginVersion: String by extra
+    val dependencyManagementVersion: String by extra
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     id("org.springframework.boot") version springBootVersion

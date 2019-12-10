@@ -1,3 +1,22 @@
+POST http://127.0.0.1:8080/actuator/shutdown
+Accept: application/json
+
+###
+GET http://127.0.0.1:8080/actuator/
+Accept: application/json
+
+###
+GET http://127.0.0.1:8080/api/messages
+Content-Type: text/event-stream
+
+###
+GET http://127.0.0.1:8080/api/message
+Accept: application/json
+
+###
+GET http://127.0.0.1:8080/not-found
+
+###
 GET http://127.0.0.1:8080/
 
 ###

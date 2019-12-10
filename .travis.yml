@@ -1,0 +1,61 @@
+notifications:
+  email: false
+git:
+  quiet: true
+  depth: 1
+language: java
+python: 3
+service: docker
+addons:
+  apt:
+    update: true
+    packages:
+      - python3-pip
+      - curl
+      - jq
+install: true
+before_install:
+  - sudo pip3 install --upgrade pip setuptools
+  - sudo pip install --upgrade httpie
+  - |
+    if [ ! -f ${HOME}/.local/daggerok/bash-functions/master/main.bash ] ; then
+      mkdir -p ${HOME}/.local/daggerok/bash-functions/master ;
+      curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash > ${HOME}/.local/daggerok/bash-functions/master/main.bash ;
+    fi
+  - source ~/.local/daggerok/bash-functions/master/main.bash
+  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+  - stop_any 80 8080
+jobs:
+  include:
+    - stage: test
+      name: mvc
+      jdk: openjdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./gradlew
+        - SPRING_PROFILES_ACTIVE=mvc bash $TRAVIS_BUILD_DIR/build/libs/*.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/not-found
+        - http :8080/api/message
+        - curl localhost:8080/api/messages &
+        - sleep 3s
+        - http post :8080/actuator/shutdown
+    - stage: test
+      name: webflux
+      jdk: openjdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./gradlew
+        - java -Dspring.profiles.active=webflux -jar $TRAVIS_BUILD_DIR/build/libs/*.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/not-found
+        - http :8080/api/message
+        - curl localhost:8080/api/messages &
+        - sleep 3s
+        - http post :8080/actuator/shutdown
+cache:
+  pip: true
+  packages: true
+  directories:
+    - ~/.local/daggerok
+    - ~/.gradle

@@ -1,4 +1,13 @@
-HELP.md
+### IntelliJ IDEA ###
+.idea
+!.idea/
+.idea/*
+!.idea/runConfigurations/
+*.iws
+*.iml
+*.ipr
+/out/
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -13,13 +22,6 @@ build/
 .settings
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
 
 ### NetBeans ###
 /nbproject/private/

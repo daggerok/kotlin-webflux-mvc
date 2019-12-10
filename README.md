@@ -1,4 +1,4 @@
-# kotlin-webflux-mvc
+# kotlin-webflux-mvc [![Build Status](https://travis-ci.org/daggerok/kotlin-webflux-mvc.svg?branch=master)](https://travis-ci.org/daggerok/kotlin-webflux-mvc)
 Spring WebFlux vs Spring MVC
 
 ## build jar

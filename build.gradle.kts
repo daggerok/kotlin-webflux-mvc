@@ -1,10 +1,3 @@
-val projectGroup: String by project
-val projectVersion: String by project
-val freeCompilerArg: String by project
-val jvmTargetVersion: String by project
-val gradleWrapperVersion: String by project
-val kotlinCoroutinesReactor: String by project
-
 plugins {
   kotlin("jvm")
   kotlin("plugin.spring")
@@ -12,6 +5,13 @@ plugins {
   id("com.github.ben-manes.versions")
   id("io.spring.dependency-management")
 }
+
+val projectGroup: String by project
+val projectVersion: String by project
+val freeCompilerArg: String by project
+val jvmTargetVersion: String by project
+val gradleWrapperVersion: String by project
+val kotlinCoroutinesReactor: String by project
 
 group = projectGroup
 version = projectVersion
@@ -32,6 +32,7 @@ repositories {
 dependencies {
   implementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinCoroutinesReactor"))
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") // toMono
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -63,6 +64,9 @@ tasks {
       freeCompilerArgs = listOf(freeCompilerArg)
       jvmTarget = jvmTargetVersion
     }
+  }
+  withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+    launchScript()
   }
   withType<Wrapper> {
     gradleVersion = gradleWrapperVersion
