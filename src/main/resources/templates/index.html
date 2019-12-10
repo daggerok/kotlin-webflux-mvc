@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Index page</h1>
+    <p>mvc message: [[${message}]]</p>
+    <p>rest message: <span id="message"></span></p>
+    <ul class="event-stream"></ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function onDOMContentLoaded() {
+
+            /**
+             * rest api
+             */
+
+            function renderMessage(text) {
+                var span = document.getElementById('message');
+                span.textContent = text;
+            }
+            function renderError(err) {
+                var text = 'error ' + err.message || err.error || JSON.stringify(err);
+                renderMessage(text);
+            }
+            function parseMessage(response) {
+                var status = response.status;
+                if (200 !== status) {
+                    var statusText = response.statusText;
+                    console.log('found statusText', statusText);
+                    return status + ' ' + statusText;
+                }
+
+                var headers = response.headers;
+                var contentType = headers.get('Content-Type') || headers.get('content-type');
+                if (contentType && contentType.indexOf('application/json') !== -1) {
+                    return response.json().then(function (json) {
+                        return json.message;
+                    });
+                }
+
+                return response.text();
+            }
+
+            fetch('/api/message').catch(renderError)
+                                 .then(parseMessage)
+                                 .then(renderMessage);
+
+            /**
+             * event stream
+             */
+
+            function renderMessages(response) {
+                if (!response) return
+                var message = response.data;
+                if (!message) return
+                var li = document.createElement('li');
+                var text = document.createTextNode(message);
+                li.appendChild(text);
+
+                var ul = document.querySelector('.event-stream');
+                ul.appendChild(li);
+            }
+            function renderErrors(err) {
+                console.log('errs', err);
+                var text = 'error ' + err.message || err.error || JSON.stringify(err);
+                renderMessages(text);
+            }
+            function eventSource(url) {
+                // https://developer.mozilla.org/en-US/docs/Web/API/EventSource
+                var eventStream = new EventSource(url);
+                eventStream.onerror = renderErrors;
+                eventStream.onmessage = renderMessages;
+                eventStream.onopen = console.debug('openning stream on ' + url);
+            }
+
+            eventSource('/api/messages');
+
+        }, false);
+    </script>
+</body>
+</html>
