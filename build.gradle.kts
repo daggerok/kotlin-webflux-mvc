@@ -1,55 +1,72 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val projectGroup: String by project
+val projectVersion: String by project
+val freeCompilerArg: String by project
+val jvmTargetVersion: String by project
+val gradleWrapperVersion: String by project
+val kotlinCoroutinesReactor: String by project
 
 plugins {
-    kotlin("jvm") version "1.3.61"
-    kotlin("plugin.spring") version "1.3.61"
-    id("org.springframework.boot") version "2.2.2.RELEASE"
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
+  kotlin("jvm")
+  kotlin("plugin.spring")
+  id("org.springframework.boot")
+  id("com.github.ben-manes.versions")
+  id("io.spring.dependency-management")
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+group = projectGroup
+version = projectVersion
+
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 val developmentOnly by configurations.creating
 configurations {
-    runtimeClasspath {
-        extendsFrom(developmentOnly)
-    }
+  runtimeClasspath {
+    extendsFrom(developmentOnly)
+  }
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") // toMono
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    }
-    testImplementation("io.projectreactor:reactor-test")
+  implementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinCoroutinesReactor"))
+  implementation("io.projectreactor.kotlin:reactor-kotlin-extensions") // toMono
+  implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+  developmentOnly("org.springframework.boot:spring-boot-devtools")
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+  }
+  testImplementation("io.projectreactor:reactor-test")
 }
 
-tasks.withType<Test> {
+tasks {
+  withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+    testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events(
+          org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+          org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+          org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+      )
     }
-}
-
-tasks.withType<Wrapper> {
-    gradleVersion = "6.0.1"
+  }
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+      freeCompilerArgs = listOf(freeCompilerArg)
+      jvmTarget = jvmTargetVersion
+    }
+  }
+  withType<Wrapper> {
+    gradleVersion = gradleWrapperVersion
+  }
 }
 
 defaultTasks("build")

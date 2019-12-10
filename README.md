@@ -1,4 +1,5 @@
 # kotlin-webflux-mvc
+Spring WebFlux vs Spring MVC
 
 ## build jar
 
@@ -10,7 +11,7 @@ _windows_
 # gradlew build
 ```
 
-## start mvc
+## start spring-mvc
 
 ```bash
 java -jar build/libs/kotlin-webflux-mvc-0.0.1-SNAPSHOT.jar --spring.profiles.active=mvc
@@ -20,7 +21,7 @@ http :8080/api/message
 http --stream :8080/api/messages 
 ```
 
-## start mebflux
+## start spring-webflux
 
 ```bash
 java -jar build/libs/kotlin-webflux-mvc-0.0.1-SNAPSHOT.jar --spring.profiles.active=webflux

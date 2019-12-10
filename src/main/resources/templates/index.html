@@ -33,7 +33,7 @@
                 var status = response.status;
                 if (200 !== status) {
                     var statusText = response.statusText;
-                    console.log('found statusText', statusText);
+                    console.debug('found statusText', statusText);
                     return status + ' ' + statusText;
                 }
 
@@ -68,7 +68,7 @@
                 ul.appendChild(li);
             }
             function renderErrors(err) {
-                console.log('errs', err);
+                console.debug('errs', err);
                 var text = 'error ' + err.message || err.error || JSON.stringify(err);
                 renderMessages(text);
             }

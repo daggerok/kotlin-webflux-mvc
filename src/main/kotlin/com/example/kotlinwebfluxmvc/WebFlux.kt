@@ -23,7 +23,7 @@ class WebFluxConfig {
 
   @Bean
   fun routes(infiniteStream: Flux<String>) = router {
-    "".nest {
+    "/".nest {
       listOf("", "/", "/404").forEach {
         GET(it) {
           RenderingResponse.create("index")

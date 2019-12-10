@@ -19,8 +19,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Duration
 
-@Profile("mvc")
 @Controller
+@Profile("mvc")
 class IndexPage {
 
   @GetMapping("", "/", "/404")
@@ -29,8 +29,8 @@ class IndexPage {
       .build()
 }
 
-@Profile("mvc")
 @Configuration
+@Profile("mvc")
 class WebFluxMvcConfig {
 
   @Bean
